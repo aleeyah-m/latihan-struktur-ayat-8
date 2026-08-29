@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Struktur Ayat — Betulkan Ayat</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Thai:wght@400;500;600&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=IBM+Plex+Serif:ital,wght@0,400;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --nila:#16223F; --nila-soft:#33456F; --nila-wash:#E7EAF3;
+  --songket:#A9741A; --songket-wash:#F5EAD3;
+  --jade:#0F6154; --jade-wash:#DFEDE9;
+  --kirmizi:#8E3626; --kirmizi-wash:#F6E4DF;
+  --teal:#295971; --teal-deep:#0F2A38;
+  --paper:#F4F2EC; --card:#FFFFFF;
+  --ink:#1A1A18; --muted:#6C6B64; --line:#DDDACF;
+  --r:10px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  background:var(--paper); color:var(--ink);
+  font-family:'IBM Plex Sans Thai',system-ui,sans-serif;
+  font-size:17px; line-height:1.7;
+  display:flex; flex-direction:column; min-height:100vh;
+}
+em,.my{font-family:'IBM Plex Serif',serif; font-style:italic}
+.my{color:var(--nila)}
+b,strong{font-weight:600}
+
+header{background:var(--nila); color:#EDEBE4; padding:14px 24px 0}
+.hd{display:flex; align-items:baseline; justify-content:space-between; gap:16px; flex-wrap:wrap; max-width:1080px; margin:0 auto}
+.hd h1{font-family:'Noto Serif Thai',serif; font-size:19px; font-weight:500; letter-spacing:.01em; cursor:pointer}
+.hd h1:hover{opacity:.8}
+.hd h1 span{color:#C9A24B; font-family:'IBM Plex Serif',serif; font-style:italic}
+.hd .meta{font-size:13px; color:#A7AEC2}
+.band{height:9px; margin-top:12px; background:#0E1729; position:relative; overflow:hidden}
+.band i{position:absolute; inset:0 100% 0 0; transition:right .35s ease;
+  background:repeating-linear-gradient(90deg,#C9A24B 0 7px,#8E6417 7px 10px,#C9A24B 10px 13px,#0E1729 13px 17px)}
+
+main{flex:1; display:flex; justify-content:center; padding:26px 20px 12px}
+.wrap{width:100%; max-width:1080px}
+.slide{display:none; animation:in .28s ease}
+.slide.on{display:block}
+@keyframes in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.slide{animation:none}.band i{transition:none}}
+
+.eyebrow{font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:var(--songket); font-weight:600; margin-bottom:6px}
+h2{font-family:'Noto Serif Thai',serif; font-size:29px; font-weight:600; line-height:1.35; margin-bottom:4px}
+h2 .ml{font-family:'IBM Plex Serif',serif; font-style:italic; font-weight:400; color:var(--nila-soft)}
+.lede{color:var(--muted); font-size:16px; margin-bottom:20px; max-width:70ch}
+h3{font-family:'Noto Serif Thai',serif; font-size:19px; font-weight:600; margin:20px 0 8px}
+
+.card{background:var(--card); border:1px solid var(--line); border-radius:var(--r); padding:18px 20px}
+.grid{display:grid; gap:14px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+
+.tag{display:inline-block; font-size:12px; font-weight:600; padding:2px 9px; border-radius:20px; letter-spacing:.02em}
+.t-s{background:var(--nila-wash); color:var(--nila)}
+.t-p{background:var(--jade-wash); color:var(--jade)}
+.t-o{background:var(--kirmizi-wash); color:var(--kirmizi)}
+.t-k{background:var(--songket-wash); color:var(--songket)}
+
+table{width:100%; border-collapse:collapse; font-size:15px; background:var(--card)}
+caption{text-align:left; font-size:13px; color:var(--muted); padding-bottom:6px}
+th{background:var(--nila); color:#EDEBE4; font-weight:500; text-align:left; padding:9px 12px; font-size:13.5px}
+td{padding:9px 12px; border-bottom:1px solid var(--line); vertical-align:top}
+tbody tr:nth-child(even) td{background:#FAF9F5}
+.tw{overflow-x:auto; border:1px solid var(--line); border-radius:var(--r)}
+
+.note{border-left:3px solid var(--songket); background:var(--songket-wash); padding:12px 16px; border-radius:0 var(--r) var(--r) 0; font-size:15.5px}
+.qrbox{display:flex; align-items:center; gap:18px; margin-top:16px; padding:16px 20px; background:var(--jade-wash); border:1px solid #B6D4CC; border-radius:var(--r)}
+.qrimg{width:96px; height:96px; flex:0 0 auto; background:#fff; padding:6px; border-radius:8px; border:1px solid var(--line)}
+.qrtext{font-family:'Noto Serif Thai',serif; font-style:italic; font-size:16px; color:var(--jade); margin:0; line-height:1.6}
+.qrlink{color:inherit; text-decoration:none}
+.qrlink:hover{text-decoration:underline}
+.qrbox a{display:inline-block}
+@media(max-width:640px){.qrbox{flex-direction:column; text-align:center}}
+ul.tight{margin:6px 0 0 20px} ul.tight li{margin-bottom:4px}
+.cols2{columns:2; column-gap:28px} .cols2 li{break-inside:avoid}
+@media(max-width:640px){.cols2{columns:1}}
+
+.cover{text-align:center; padding:5vh 0 0}
+.toc{display:grid; gap:16px; grid-template-columns:repeat(auto-fit,minmax(310px,1fr)); margin-top:34px}
+.tochd{font-family:'Noto Serif Thai',serif; font-size:17px; font-weight:600; padding-bottom:10px; margin-bottom:10px; border-bottom:1px solid var(--line); display:flex; align-items:center; gap:9px}
+.toclist{margin:0 0 0 22px; font-size:15px; line-height:1.85}
+.toclist li{padding-left:4px}
+.toclist li::marker{color:var(--songket); font-family:'IBM Plex Serif',serif}
+.toclist small{color:var(--muted); font-size:12.5px}
+.toclink{font:inherit; text-align:left; background:none; border:none; padding:0; margin:0; color:var(--ink); cursor:pointer; width:100%}
+.toclink:hover{color:var(--songket); text-decoration:underline}
+.toclink:focus-visible{outline:2px solid var(--nila-soft); outline-offset:2px}
+.tochint{text-align:center; margin-top:22px; font-size:14px; color:var(--muted)}
+.cover h2{font-size:48px; margin:16px 0 8px}
+.cover .sub{font-size:20px; color:var(--nila-soft); font-family:'Noto Serif Thai',serif}
+.cover .rule{width:180px; height:7px; margin:26px auto;
+  background:repeating-linear-gradient(90deg,#A9741A 0 7px,#16223F 7px 10px,#A9741A 10px 13px,transparent 13px 17px)}
+.cover-hero{padding-top:8vh}
+.cover-green{
+  position:relative; overflow:hidden;
+  background:
+    radial-gradient(circle at 25% 25%, rgba(245,217,139,.20) 0 7px, transparent 8px),
+    radial-gradient(circle at 75% 25%, rgba(245,217,139,.20) 0 7px, transparent 8px),
+    radial-gradient(circle at 25% 75%, rgba(245,217,139,.20) 0 7px, transparent 8px),
+    radial-gradient(circle at 75% 75%, rgba(245,217,139,.20) 0 7px, transparent 8px),
+    radial-gradient(circle at 50% 50%, rgba(245,217,139,.14) 0 5px, transparent 6px),
+    linear-gradient(165deg, var(--teal) 0%, var(--teal-deep) 100%);
+  background-size:76px 76px,76px 76px,76px 76px,76px 76px,76px 76px,100% 100%;
+  color:#EFF6F3;
+  border-radius:18px; padding:0; margin:0 auto; max-width:640px;
+  box-shadow:0 18px 40px -20px rgba(15,42,56,0.55)}
+.cover-green .cover-body{padding:5vh 24px 4.5vh}
+.cover-set{display:inline-block; font-family:'Noto Serif Thai',serif; font-weight:600; font-size:14px;
+  color:#F5D98B; background:rgba(245,217,139,0.14); border:1px solid rgba(245,217,139,0.45);
+  padding:5px 16px; border-radius:999px; margin-bottom:14px; letter-spacing:.02em}
+.cover-green h2{color:#FBF9F1}
+.cover-green .sub{color:#CFE6DE}
+.cover-green .cstat{color:#CFE6DE}
+.cover-green .cstat b{color:#F5D98B}
+.cover-green .cstat + .cstat{border-left:1px solid rgba(239,246,243,0.25)}
+.batik-strip{
+  height:16px;
+  background-color:var(--teal-deep);
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='16'><polygon points='0,16 16,0 32,16' fill='%23C9A24B'/></svg>");
+  background-repeat:repeat-x; background-size:32px 16px; background-position:center;
+}
+.batik-strip.flip{ transform:scaleY(-1); }
+.cover-stats{display:flex; justify-content:center; align-items:center; gap:0; margin:30px 0 4px; flex-wrap:wrap}
+.cstat{font-size:13.5px; color:var(--nila-soft); padding:0 16px; position:relative}
+.cstat b{display:block; font-family:'IBM Plex Serif',serif; font-style:italic; font-size:21px; color:var(--nila); margin-bottom:2px}
+.cover-author{margin-top:26px; padding-top:20px; border-top:1px solid rgba(239,246,243,0.25)}
+.ca-name{font-family:'Noto Serif Thai',serif; font-size:15px; font-weight:600; color:#FBF9F1; margin-bottom:5px}
+.ca-affil{font-size:12.5px; color:#CFE6DE; line-height:1.7}
+
+.flow{max-width:640px; margin:0 auto}
+.flow-start{display:flex; align-items:center; justify-content:center; gap:8px; background:var(--nila); color:#EDEBE4;
+  font-family:'Noto Serif Thai',serif; font-weight:600; font-size:16px; padding:10px 20px; border-radius:22px;
+  width:fit-content; margin:0 auto 4px}
+.flow-arrow{text-align:center; color:var(--songket); font-size:20px; line-height:1; margin:2px 0}
+.flow-step{display:flex; gap:14px; align-items:flex-start; background:var(--card); border:1px solid var(--line);
+  border-radius:var(--r); padding:14px 16px; margin-bottom:4px}
+.flow-num{flex:0 0 auto; width:34px; height:34px; border-radius:50%; background:var(--jade); color:#fff;
+  display:flex; align-items:center; justify-content:center; font-family:'Noto Serif Thai',serif; font-weight:600; font-size:16px}
+.flow-step-body h4{font-family:'Noto Serif Thai',serif; font-size:16px; font-weight:600; margin:0 0 3px; color:var(--ink)}
+.flow-step-body p{margin:0; font-size:14.5px; color:var(--muted); line-height:1.6}
+.flow-branch{margin:10px 0 4px; text-align:center; background:var(--nila-wash); border-radius:var(--r); padding:9px 14px;
+  font-family:'Noto Serif Thai',serif; font-weight:600; font-size:15px; color:var(--nila)}
+.flow-cols{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:4px}
+.flow-col{border-radius:var(--r); padding:12px 14px; font-size:14px; line-height:1.65}
+.flow-col.yes{background:var(--jade-wash); border:1px solid #B6D4CC}
+.flow-col.no{background:var(--kirmizi-wash); border:1px solid #E3C3BA}
+.flow-col b{display:block; margin-bottom:4px; font-family:'Noto Serif Thai',serif}
+.flow-col.yes b{color:var(--jade)} .flow-col.no b{color:var(--kirmizi)}
+.flow-end{display:flex; align-items:center; gap:12px; background:var(--songket-wash); border:1px solid #E2CFA4;
+  border-radius:var(--r); padding:14px 16px; margin-top:4px}
+.flow-end .ico{font-size:26px}
+.flow-end h4{font-family:'Noto Serif Thai',serif; font-size:16px; margin:0 0 3px; color:var(--songket)}
+.flow-end p{margin:0; font-size:14px; color:#7A5A1E}
+.flow-tips{margin-top:18px; border:1px dashed var(--line); border-radius:var(--r); padding:14px 16px}
+.flow-tips h4{font-family:'Noto Serif Thai',serif; font-size:15px; margin:0 0 8px; color:var(--nila)}
+.flow-tips ul{margin:0; padding-left:20px; font-size:14px; line-height:1.8; color:var(--ink)}
+@media(max-width:640px){.flow-cols{grid-template-columns:1fr}}
+
+.fillrow{display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-left:36px}
+input.ans{font:inherit; font-size:15px; padding:8px 12px; border:1px solid var(--line); border-radius:8px; background:#FCFBF8; min-width:220px; flex:1}
+input.ans:focus-visible{outline:2px solid var(--nila-soft); outline-offset:1px}
+input.ans.right{border-color:var(--jade); background:var(--jade-wash); color:var(--jade)}
+input.ans.wrong{border-color:var(--kirmizi); background:var(--kirmizi-wash); color:var(--kirmizi)}
+button.chk{font:inherit; font-size:14px; padding:8px 16px; border-radius:8px; border:1px solid var(--nila); background:var(--nila); color:#EDEBE4; cursor:pointer}
+button.chk.alt{background:transparent; color:var(--nila)}
+button.chk:disabled{opacity:.32; cursor:default}
+button.chk:focus-visible{outline:2px solid var(--songket); outline-offset:2px}
+.err{margin:7px 0 0 36px; font-size:13px; color:var(--kirmizi); display:none}
+.err.show{display:block}
+.chips{display:flex; flex-wrap:wrap; gap:7px; margin:0 0 12px 36px}
+.chip{font-family:'IBM Plex Serif',serif; font-style:italic; font-size:15px; padding:6px 14px; border-radius:20px;
+  border:1px solid var(--line); background:#FCFBF8; cursor:pointer; color:var(--nila)}
+.chip:hover:not(:disabled){border-color:var(--nila-soft); background:#F3F5FA}
+.chip:disabled{opacity:.28; cursor:default}
+.chip:focus-visible{outline:2px solid var(--nila-soft); outline-offset:2px}
+.line{margin:0 0 12px 36px; min-height:44px; border-bottom:2px solid var(--line); padding:9px 4px;
+  font-family:'IBM Plex Serif',serif; font-style:italic; font-size:16px; color:var(--nila)}
+.line.blank{color:var(--muted); font-style:normal; font-family:inherit; font-size:14px}
+.line.right{border-color:var(--jade)}
+.line.wrong{border-color:var(--kirmizi)}
+.hintth{margin:0 0 10px 36px; font-size:14px; color:var(--muted)}
+.qbox{background:var(--card); border:1px solid var(--line); border-radius:var(--r); padding:16px 18px; margin-bottom:14px}
+.qh{display:flex; gap:10px; align-items:baseline; margin-bottom:10px}
+.qn{font-family:'IBM Plex Serif',serif; font-size:15px; color:var(--songket); font-weight:500; min-width:26px}
+.qt{font-size:16px}
+.opts{display:grid; gap:7px; margin-left:36px}
+.opt{text-align:left; font:inherit; font-size:15px; background:#FCFBF8; border:1px solid var(--line);
+  border-radius:8px; padding:8px 12px; cursor:pointer; transition:border-color .15s,background .15s}
+.opt:hover:not(:disabled){border-color:var(--nila-soft); background:#F3F5FA}
+.opt:focus-visible{outline:2px solid var(--nila-soft); outline-offset:2px}
+.opt:disabled{cursor:default}
+.opt.right{background:var(--jade-wash); border-color:var(--jade); color:var(--jade); font-weight:500}
+.opt.wrong{background:var(--kirmizi-wash); border-color:var(--kirmizi); color:var(--kirmizi)}
+.fb{margin:12px 0 0 36px; padding:12px 15px; border-radius:var(--r); background:#FAF9F5;
+  border:1px solid var(--line); font-size:14px; color:#4A4943; display:none}
+.fb.show{display:block}
+.fb b{color:var(--nila); font-weight:600; margin-right:5px}
+.fbh{font-size:14.5px; font-weight:600; display:flex; align-items:center; flex-wrap:wrap; gap:8px;
+  padding-bottom:9px; margin-bottom:9px; border-bottom:1px solid var(--line)}
+.fbh .dot{width:9px; height:9px; border-radius:50%; display:inline-block}
+.fbh.good{color:var(--jade)} .fbh.good .dot{background:var(--jade)}
+.fbh.bad{color:var(--kirmizi)} .fbh.bad .dot{background:var(--kirmizi)}
+.fbh .yours{font-weight:400; font-size:13px; color:var(--muted)}
+.fbl{margin-bottom:7px; line-height:1.72}
+.fbl:last-child{margin-bottom:0}
+.fbl.tip{padding-top:8px; border-top:1px dashed var(--line); color:#5C5A52}
+.fbl.tip b{color:var(--songket)}
+.fb .sol{font-weight:500; color:var(--nila)}
+.tipcard{background:var(--songket-wash); border-left:3px solid var(--songket); border-radius:0 var(--r) var(--r) 0;
+  padding:13px 17px; margin-bottom:22px}
+.tipcard .thd{font-family:'Noto Serif Thai',serif; font-size:15px; font-weight:600; color:var(--songket); margin-bottom:6px}
+.tipcard ul{margin:0 0 0 19px; font-size:14.5px; line-height:1.72; color:#5A5348}
+.tipcard li{margin-bottom:3px}
+.tipcard li:last-child{margin-bottom:0}
+.settool{display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;
+  margin-top:18px; padding-top:15px; border-top:1px solid var(--line)}
+.settool .stat{font-size:14px; color:var(--muted)}
+.settool .stat b{color:var(--nila); font-weight:600}
+button.clr{font:inherit; font-size:14px; padding:8px 18px; border-radius:22px;
+  border:1px solid var(--nila); background:transparent; color:var(--nila); cursor:pointer}
+button.clr:hover:not(:disabled){background:var(--nila-wash)}
+button.clr:disabled{opacity:.32; cursor:default}
+button.clr:focus-visible{outline:2px solid var(--songket); outline-offset:2px}
+.brief{background:var(--nila-wash); border-left:3px solid var(--nila); border-radius:0 var(--r) var(--r) 0;
+  padding:13px 17px; margin-bottom:20px}
+.brief .bhd{font-family:'Noto Serif Thai',serif; font-size:15px; font-weight:600; color:var(--nila); margin-bottom:6px}
+.brief ul{margin:0 0 0 19px; font-size:14.5px; line-height:1.72}
+.brief li{margin-bottom:3px}
+.brief li:last-child{margin-bottom:0}
+
+.pickchip{font:inherit; font-family:'IBM Plex Serif',serif; font-style:italic; font-size:15.5px; color:var(--ink);
+  background:transparent; border:1.5px solid transparent; padding:3px 7px; border-radius:8px; cursor:pointer}
+.pickchip:hover:not(:disabled){background:var(--nila-wash)}
+.pickchip.active.circle{border-color:var(--songket); border-radius:16px; color:var(--songket); font-weight:600}
+.pickchip.active.underline{text-decoration:underline; text-decoration-color:var(--nila); text-decoration-thickness:2.5px; color:var(--nila); font-weight:600}
+.pickchip.active.check{background:var(--nila); color:#EDEBE4; border-color:var(--nila); border-radius:16px; font-weight:600}
+.pickchip.graded.ok{background:var(--jade-wash)!important; color:var(--jade)!important; border-color:var(--jade)!important}
+.pickchip.graded.bad{background:var(--kirmizi-wash)!important; color:var(--kirmizi)!important; border-color:var(--kirmizi)!important}
+.pickchip.graded.missed{background:var(--songket-wash)!important; color:var(--songket)!important; border-color:var(--songket)!important}
+.pickchip2{font:inherit; font-family:'IBM Plex Serif',serif; font-style:italic; font-size:15.5px; color:var(--ink);
+  background:transparent; border:1.5px solid transparent; padding:3px 7px; border-radius:8px; cursor:pointer}
+.pickchip2:hover:not(:disabled){background:var(--nila-wash)}
+.pickchip2[data-state="khas"]{text-decoration:underline; text-decoration-color:var(--nila); text-decoration-thickness:2.5px; color:var(--nila); font-weight:600}
+.pickchip2[data-state="am"]{border-color:var(--songket); border-radius:16px; color:var(--songket); font-weight:600}
+.pickchip2.graded.ok{background:var(--jade-wash)!important; color:var(--jade)!important; border-color:var(--jade)!important}
+.pickchip2.graded.bad{background:var(--kirmizi-wash)!important; color:var(--kirmizi)!important; border-color:var(--kirmizi)!important}
+.pickchip2.graded.missed{background:var(--songket-wash)!important; color:var(--songket)!important; border-color:var(--songket)!important}
+.plainword{color:var(--muted); font-size:15.5px}
+.sentwrap{font-size:16px; line-height:2.5; margin:8px 0 14px 36px}
+.bankwrap{display:flex; flex-wrap:wrap; gap:6px; margin:8px 0 14px 36px}
+.legend2{display:flex; gap:16px; font-size:13px; color:var(--muted); margin:0 0 12px 36px}
+.legend2 span{display:flex; align-items:center; gap:6px}
+.lg-sw{width:22px; height:14px; border-radius:4px; display:inline-block}
+.lg-sw.circle{border:2px solid var(--songket)}
+.lg-sw.underline{border-bottom:2.5px solid var(--nila)}
+
+.score{background:var(--nila); color:#EDEBE4; border-radius:var(--r); padding:26px; text-align:center}
+.score .n{font-family:'IBM Plex Serif',serif; font-size:56px; line-height:1; color:#C9A24B}
+.score .l{font-size:15px; color:#A7AEC2; margin-top:6px}
+.score .msg{margin-top:14px; font-size:16px}
+.endnav{display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin-top:24px}
+
+footer{border-top:1px solid var(--line); background:var(--card); padding:12px 20px}
+.ft{max-width:1080px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:14px}
+.ft-side{display:flex; align-items:center; gap:10px}
+button.nav{font:inherit; font-size:15px; padding:8px 18px; border-radius:22px; border:1px solid var(--nila);
+  background:var(--nila); color:#EDEBE4; cursor:pointer; transition:opacity .15s}
+button.nav.ghost{background:transparent; color:var(--nila)}
+button.nav:disabled{opacity:.32; cursor:default}
+button.nav:focus-visible{outline:2px solid var(--songket); outline-offset:2px}
+.dots{display:flex; gap:5px; flex-wrap:wrap; justify-content:center; max-width:480px}
+.dot{width:9px; height:9px; border-radius:50%; border:none; padding:0; background:var(--line); cursor:pointer}
+.dot.on{background:var(--songket)}
+.dot.ex{background:#C9C6BA; border-radius:2px}
+.dot.ex.on{background:var(--kirmizi)}
+.dot:focus-visible{outline:2px solid var(--nila-soft); outline-offset:2px}
+.hint{font-size:12.5px; color:var(--muted)}
+@media(max-width:640px){.hint{display:none} h2{font-size:22px} .cover h2{font-size:30px}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hd">
+    <h1 onclick="show(0)" role="button" aria-label="กลับไปหน้าแรก"><span>Struktur Ayat</span> — Betulkan Ayat</h1>
+    <div class="meta"><span id="pos">1</span> / <span id="tot">4</span></div>
+  </div>
+  <div class="band"><i id="bar"></i></div>
+</header>
+
+<main><div class="wrap" id="deck">
+
+<section class="slide on">
+  <div class="cover cover-hero cover-green">
+    <div class="batik-strip"></div>
+    <div class="cover-body">
+      <div class="cover-set">Latihan 8</div>
+      <h2>Betulkan Ayat</h2>
+      <div class="sub">แบบฝึกหัดแบบโต้ตอบ โครงสร้างประโยคภาษามลายู (Struktur Ayat)</div>
+      <div class="rule"></div>
+      <div class="cover-stats">
+        <span class="cstat"><b>1</b>หน่วยเนื้อหา</span>
+        <span class="cstat"><b>1</b>ชุดแบบฝึกหัด</span>
+        <span class="cstat"><b>10</b>ข้อ</span>
+        <span class="cstat"><b>4</b>หน้า</span>
+      </div>
+      <div class="cover-author">
+        <div class="ca-name">ผู้ช่วยศาสตราจารย์ ดร. อาลียะห์ มะแซ และคณะ</div>
+        <div class="ca-affil">หลักสูตรครุศาสตร์บัณฑิต สาขาการสอนภาษามลายู<br>คณะมนุษยศาสตร์และสังคมศาสตร์ มหาวิทยาลัยราชภัฏยะลา</div>
+      </div>
+    </div>
+    <div class="batik-strip flip"></div>
+  </div>
+</section>
+
+<section class="slide">
+  <div class="eyebrow">ทบทวนก่อนทำแบบฝึกหัด</div>
+  <h2>ข้อผิดพลาดที่พบบ่อยในประโยคภาษามลายู</h2>
+  <p class="lede">แบบฝึกหัดนี้รวมข้อผิดพลาดทุกแบบที่เคยพบใน Latihan ก่อนหน้า ให้ทบทวนก่อนเริ่มทำ</p>
+  <div class="grid g2">
+    <div class="card"><b>ลำดับคำใน Frasa Nama ผิด</b><br>Inti ต้องมาก่อน Penerang เสมอ<br><span class="my">Melayu bahasa</span> ✗ &nbsp;→&nbsp; <span class="my">Bahasa Melayu</span> ✓</div>
+    <div class="card"><b>กริยาขาด Objek</b><br>กริยาสองกรรม เช่น <span class="my">membeli, menjahitkan, mengajarkan</span> ต้องมีกรรมตามหลัง</div>
+    <div class="card"><b>กริยาขาด Pelengkap</b><br>เช่น <span class="my">menjadi, beransur, bertambah</span> ต้องมีคำเติมเต็มเสมอ</div>
+    <div class="card"><b>การเขียนคำสันธาน/บุพบทติดกันผิด</b><br><span class="my">di</span> ต้องแยกจากคำนามที่ตามมาเสมอ เช่น <span class="my">di sekolah</span> ไม่ใช่ <span class="my">disekolah</span></div>
+  </div>
+  <div class="note" style="margin-top:16px">อ่านความหมายภาษาไทยที่กำกับไว้ให้ดี เพราะบางข้อต้องเปลี่ยน Subjek หรือเติมคำให้ตรงกับความหมายที่ต้องการสื่อ ไม่ใช่แค่แก้ไวยากรณ์ผิวเผิน</div>
+</section>
+
+<section class="slide">
+  <div class="eyebrow">แบบฝึกหัด ชุดที่ 8</div>
+  <h2>Betulkan Ayat</h2>
+  <p class="lede">แต่ละข้อมีข้อผิดพลาด ให้เขียนประโยคที่ถูกต้องใหม่ทั้งประโยค ตามความหมายภาษาไทยที่กำกับไว้ 10 ข้อ</p>
+  <div class="brief">
+    <div class="bhd">คำชี้แจง</div>
+    <ul>
+      <li>พิมพ์ประโยคที่แก้ไขแล้วทั้งประโยคลงในช่อง ไม่ต้องใส่เครื่องหมายคำพูด</li>
+      <li>ตอบผิดไม่เป็นไร จะได้คำใบ้ช่วยชี้แนวทาง ลองแก้ไขคำตอบแล้วกดตรวจใหม่ได้ไม่จำกัดครั้ง</li>
+      <li>ไม่ต้องกังวลเรื่องตัวพิมพ์ใหญ่-เล็กหรือจุดท้ายประโยค ระบบจะไม่นับเป็นข้อผิด</li>
+    </ul>
+  </div>
+  <div id="ex1"></div>
+</section>
+
+<section class="slide">
+  <div class="eyebrow">ผลคะแนน</div>
+  <h2>สรุปผลการทำแบบฝึกหัด</h2>
+  <div class="score">
+    <div class="n"><span id="sc">0</span> / <span id="tt">10</span></div>
+    <div class="l">ตอบแล้ว <span id="done">0</span> ข้อ</div>
+    <div class="msg" id="msg">เริ่มทำแบบฝึกหัดได้จากสไลด์ก่อนหน้า</div>
+  </div>
+  <div class="endnav">
+    <button class="nav" onclick="restartAll()">เริ่มเรียนใหม่ตั้งแต่หน้าแรก</button>
+    <button class="nav ghost" onclick="resetAll()">ล้างคำตอบ ทำแบบฝึกหัดใหม่</button>
+    <button class="nav ghost" onclick="show(2)">กลับไปทำแบบฝึกหัด</button>
+  </div>
+  <p style="text-align:center;margin-top:20px;font-size:12.5px;color:var(--muted)">อ้างอิง: Nik Safiah Karim, Farid M. Onn, Hashim Haji Musa, &amp; Abdul Hamid Mahmood. (2015). <em>Tatabahasa Dewan</em> (Edisi ketiga). Dewan Bahasa dan Pustaka.</p>
+</section>
+</div></main>
+
+<footer>
+  <div class="ft">
+    <div class="ft-side">
+      <button class="nav ghost" id="home" onclick="show(0)" aria-label="กลับไปหน้าแรก">⌂ หน้าแรก</button>
+      <button class="nav ghost" id="prev" onclick="go(-1)">ย้อนกลับ</button>
+    </div>
+    <div class="dots" id="dots"></div>
+    <div class="ft-side">
+      <span class="hint">ใช้ปุ่มลูกศรซ้ายขวาเลื่อนสไลด์ได้</span>
+      <button class="nav" id="next" onclick="go(1)">ถัดไป</button>
+    </div>
+  </div>
+</footer>
+
+<script>
+const BANK = {"ex1": {"type": "fill", "items": [{"q": "จงเขียนประโยคที่ถูกต้องใหม่ทั้งประโยค", "hint": "แก้ประโยคนี้ <span class=\"my\">“Melayu bahasa itu mudah.”</span>", "a": ["Bahasa Melayu itu mudah"], "sol": "Bahasa Melayu itu mudah.", "e": "ข้อผิดพลาด: ลำดับคำใน Frasa Nama กลับด้าน — Inti (คำหลัก) ต้องมาก่อน Penerang (คำขยาย) เสมอ", "retryHint": "Frasa Nama ที่ถูกต้องคือ “Bahasa Melayu” ไม่ใช่ “Melayu bahasa” (Inti ต้องมาก่อน)"}, {"q": "จงเขียนประโยคที่ถูกต้องใหม่ทั้งประโยค", "hint": "แก้ประโยคนี้ <span class=\"my\">“Abang membeli.”</span> <span style=\"color:#6C6B64\">(ต้องการสื่อว่า: พี่ชายซื้อเสื้อ)</span>", "a": ["Abang membeli baju", "Abang membeli sehelai baju"], "sol": "Abang membeli baju.", "e": "ข้อผิดพลาด: membeli เป็นกริยาที่ต้องมี Objek ตามหลังเสมอ ประโยคเดิมไม่สมบูรณ์", "retryHint": "เติมกรรม (Objek) ที่แปลว่า “เสื้อ” ต่อท้ายกริยา membeli"}, {"q": "จงเขียนประโยคที่ถูกต้องใหม่ทั้งประโยค", "hint": "แก้ประโยคนี้ <span class=\"my\">“Cuaca hari ini bertambah.”</span> <span style=\"color:#6C6B64\">(ต้องการสื่อว่า: อากาศวันนี้หนาวขึ้น)</span>", "a": ["Cuaca hari ini bertambah sejuk"], "sol": "Cuaca hari ini bertambah sejuk.", "e": "ข้อผิดพลาด: bertambah เป็นกริยาที่ต้องมี Pelengkap เสมอ ประโยคเดิมไม่สมบูรณ์", "retryHint": "เติม Pelengkap ที่แปลว่า “หนาว” ต่อท้ายกริยา bertambah"}, {"q": "จงเขียนประโยคที่ถูกต้องใหม่ทั้งประโยค", "hint": "แก้ประโยคนี้ <span class=\"my\">“Ali disekolah.”</span> <span style=\"color:#6C6B64\">(ต้องการสื่อว่า: อาลีอยู่ที่โรงเรียน)</span>", "a": ["Ali di sekolah"], "sol": "Ali di sekolah.", "e": "ข้อผิดพลาด: “disekolah” เขียนติดกันผิด ต้องแยก Kata Sendi Nama “di” ออกจากคำนาม “sekolah”", "retryHint": "แยกคำ “di” กับ “sekolah” ออกจากกัน โดยเว้นวรรค"}, {"q": "จงเขียนประโยคที่ถูกต้องใหม่ทั้งประโยค", "hint": "แก้ประโยคนี้ <span class=\"my\">“Saya rumah besar.”</span> <span style=\"color:#6C6B64\">(ต้องการสื่อว่า: บ้านของฉันใหญ่)</span>", "a": ["Rumah saya besar"], "sol": "Rumah saya besar.", "e": "ข้อผิดพลาด: Subjek ผิด — ประโยคนี้ควรพูดถึง “บ้าน” ไม่ใช่ “ฉัน” Subjek ที่ถูกต้องคือ Frasa Nama “Rumah saya”", "retryHint": "Subjek ควรเป็นวลีนาม “Rumah saya” (บ้านของฉัน) ไม่ใช่ “Saya” เพียงคำเดียว"}, {"q": "จงเขียนประโยคที่ถูกต้องใหม่ทั้งประโยค", "hint": "แก้ประโยคนี้ <span class=\"my\">“Cerita buku itu menarik.”</span> <span style=\"color:#6C6B64\">(ต้องการสื่อว่า: หนังสือนิทานเล่มนั้นน่าสนใจ)</span>", "a": ["Buku cerita itu menarik"], "sol": "Buku cerita itu menarik.", "e": "ข้อผิดพลาด: ลำดับคำใน Frasa Nama กลับด้าน — Inti “buku” ต้องมาก่อน Penerang “cerita”", "retryHint": "Frasa Nama ที่ถูกต้องคือ “Buku cerita” ไม่ใช่ “Cerita buku” (Inti ต้องมาก่อน)"}, {"q": "จงเขียนประโยคที่ถูกต้องใหม่ทั้งประโยค", "hint": "แก้ประโยคนี้ <span class=\"my\">“Emak menjahitkan.”</span> <span style=\"color:#6C6B64\">(ต้องการสื่อว่า: แม่เย็บเสื้อให้ฉัน)</span>", "a": ["Emak menjahitkan saya baju", "Emak menjahitkan saya sehelai baju"], "sol": "Emak menjahitkan saya baju.", "e": "ข้อผิดพลาด: menjahitkan เป็นกริยาสองกรรมที่ต้องมีทั้ง Objek Tepat (ผู้รับ) และ Objek Sipi (สิ่งของ)", "retryHint": "เติม Objek Tepat (ผู้รับ = ฉัน) ก่อน แล้วตามด้วย Objek Sipi (สิ่งของ = เสื้อ)"}, {"q": "จงเขียนประโยคที่ถูกต้องใหม่ทั้งประโยค", "hint": "แก้ประโยคนี้ <span class=\"my\">“Kucing menjadi.”</span> <span style=\"color:#6C6B64\">(ต้องการสื่อว่า: แมวผอมลง)</span>", "a": ["Kucing menjadi kurus"], "sol": "Kucing menjadi kurus.", "e": "ข้อผิดพลาด: menjadi เป็นกริยาที่ต้องมี Pelengkap เสมอ ประโยคเดิมไม่สมบูรณ์", "retryHint": "เติม Pelengkap ที่แปลว่า “ผอม” ต่อท้ายกริยา menjadi"}, {"q": "จงเขียนประโยคที่ถูกต้องใหม่ทั้งประโยค", "hint": "แก้ประโยคนี้ <span class=\"my\">“Kayu rumah saya.”</span> <span style=\"color:#6C6B64\">(ต้องการสื่อว่า: บ้านไม้ของฉัน)</span>", "a": ["Rumah kayu saya"], "sol": "Rumah kayu saya.", "e": "ข้อผิดพลาด: ลำดับคำใน Frasa Nama กลับด้าน — Inti “rumah” ต้องมาก่อน Penerang ทั้งสอง (kayu และ saya)", "retryHint": "เรียงใหม่ให้ Inti “rumah” อยู่หน้าสุด ตามด้วยคำขยายวัสดุแล้วจึงเจ้าของ"}, {"q": "จงเขียนประโยคที่ถูกต้องใหม่ทั้งประโยค", "hint": "แก้ประโยคนี้ <span class=\"my\">“Cikgu mengajarkan.”</span> <span style=\"color:#6C6B64\">(ต้องการสื่อว่า: ครูสอนคณิตศาสตร์ให้พวกเรา)</span>", "a": ["Cikgu mengajarkan kami matematik"], "sol": "Cikgu mengajarkan kami matematik.", "e": "ข้อผิดพลาด: mengajarkan เป็นกริยาสองกรรมที่ต้องมีทั้ง Objek Tepat (ผู้รับ) และ Objek Sipi (สิ่งที่สอน)", "retryHint": "เติม Objek Tepat (ผู้รับ = พวกเรา) ก่อน แล้วตามด้วย Objek Sipi (สิ่งที่สอน = คณิตศาสตร์)"}]}};
+
+const ANS = {};
+const ORD = {};
+const answered = {};
+let TOTAL = 0;
+
+function norm(s){
+  return s.trim().toLowerCase().replace(/\s+/g,' ').replace(/\s*,\s*/g,', ').replace(/[.!?]+$/,'').trim();
+}
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function head(i,q){ return '<div class="qh"><span class="qn">'+(i+1)+'.</span><span class="qt">'+q+'</span></div>'; }
+function setOf(id){ return id.split('-')[0]; }
+
+function fbBox(id,it,sol){
+  let s = '<div class="fb" id="fb-'+id+'">';
+  s += '<div class="fbh" id="fbh-'+id+'"></div>';
+  s += '<div class="fbl tip" id="fbhint-'+id+'" style="display:none"></div>';
+  s += '<div id="fbreveal-'+id+'" style="display:none">';
+  s += '<div class="fbl"><b>คำตอบที่ถูกต้อง</b> <span class="sol">'+sol+'</span></div>';
+  s += '<div class="fbl"><b>คำอธิบาย</b> '+it.e+'</div>';
+  if(it.tip) s += '<div class="fbl tip"><b>ข้อควรจำ</b> '+it.tip+'</div>';
+  s += '</div>';
+  return s + '</div>';
+}
+
+const PRAISE = ["เยี่ยมมาก! ตอบถูกต้อง", "สุดยอด! เก่งมาก", "ถูกต้องเป๊ะ! ทำได้ดีมาก", "ดีมาก! เข้าใจโครงสร้างประโยคแล้ว", "เก่งมาก! ไปข้อต่อไปกันเลย"];
+const ENCOURAGE = ["ยังไม่ถูก ลองทบทวนแล้วพยายามอีกครั้งนะ", "เกือบแล้ว! ลองดูอีกทีนะ", "ไม่เป็นไร ทุกคนผิดพลาดได้ ลองใหม่อีกครั้ง", "ยังไม่ถูก แต่อย่าเพิ่งท้อ ลองอีกทีนะ", "ใกล้แล้ว! ลองทบทวนแล้วแก้ไขดูอีกครั้ง"];
+function pickPhrase(ok){ const arr = ok ? PRAISE : ENCOURAGE; return arr[Math.floor(Math.random()*arr.length)]; }
+function mark(id, ok, extra, hintText){
+  const hd = document.getElementById('fbh-'+id);
+  hd.className = 'fbh ' + (ok ? 'good' : 'bad');
+  hd.innerHTML = '<span class="dot"></span>' + pickPhrase(ok) + (extra ? '<span class="yours">'+extra+'</span>' : '');
+  document.getElementById('fb-'+id).classList.add('show');
+  const hintEl = document.getElementById('fbhint-'+id);
+  if(ok){
+    hintEl.style.display = 'none';
+    document.getElementById('fbreveal-'+id).style.display = '';
+  } else {
+    hintEl.innerHTML = '<b>คำใบ้</b> ' + (hintText || 'ลองพิจารณาว่าอะไรคือ Subjek และ Predikat ของประโยคนี้อีกครั้ง');
+    hintEl.style.display = '';
+    document.getElementById('fbreveal-'+id).style.display = 'none';
+  }
+}
+
+function lockBtns(id){
+  document.querySelectorAll('button.chk[data-for="'+id+'"]').forEach(b=>b.disabled=true);
+}
+
+function renderSet(k){
+  const set = BANK[k], host = document.getElementById(k);
+  if(!host) return;
+  host.innerHTML = set.items.map((it,i)=>{
+      const id = k+'-'+i;
+      if(set.type==='mcq'){
+        ANS[id] = {a:it.a};
+        const opts = it.o.map((o,j)=>'<button class="opt" data-q="'+id+'" data-i="'+j+'" data-a="'+it.a+'">'+o+'</button>').join('');
+        return '<div class="qbox">'+head(i,it.q)+'<div class="opts">'+opts+'</div>'+fbBox(id,it,it.o[it.a])+'</div>';
+      }
+      if(set.type==='fill'){
+        const sol = it.sol || it.a[0];
+        ANS[id] = {a:it.a, retryHint:it.retryHint};
+        return '<div class="qbox">'+head(i,it.q)+
+          '<p class="hintth">'+it.hint+'</p>'+
+          '<div class="fillrow"><input class="ans" id="in-'+id+'" data-id="'+id+'" placeholder="พิมพ์คำตอบที่นี่" autocomplete="off">'+
+          '<button class="chk" data-for="'+id+'" onclick="checkFill(this.dataset.for)">ตรวจคำตอบ</button></div>'+
+          '<div class="err" id="er-'+id+'">พิมพ์คำตอบก่อนกดตรวจ</div>'+
+          fbBox(id,it,'<span class="my">'+sol+'</span>')+'</div>';
+      }
+      if(set.type==='order'){
+        ANS[id] = {a:it.a, n:it.w.length, hint:it.hint};
+        ORD[id] = [];
+        const chips = it.w.map((w,j)=>'<button class="chip" data-id="'+id+'" data-j="'+j+'" onclick="addWord(this)">'+w+'</button>').join('');
+        return '<div class="qbox">'+head(i,it.q)+
+          '<div class="line blank" id="ln-'+id+'">กดคำด้านล่างเรียงเป็นประโยค</div>'+
+          '<div class="chips">'+chips+'</div>'+
+          '<div class="fillrow"><button class="chk alt" data-for="'+id+'" onclick="undoWord(this.dataset.for)">ลบคำสุดท้าย</button>'+
+          '<button class="chk alt" data-for="'+id+'" onclick="clearOrder(this.dataset.for)">ล้างคำตอบ</button>'+
+          '<button class="chk" data-for="'+id+'" onclick="checkOrder(this.dataset.for)">ตรวจคำตอบ</button></div>'+
+          '<div class="err" id="er-'+id+'">เรียงคำให้ครบทุกคำก่อนกดตรวจ</div>'+
+          fbBox(id,it,'<span class="my">'+it.a+'.</span>')+'</div>';
+      }
+      if(set.type==='pick'){
+        ANS[id] = {words:it.words};
+        const wrapClass = it.mode==='check' ? 'bankwrap' : 'sentwrap';
+        const sep = it.mode==='check' ? '' : ' ';
+        const chips = it.words.map((w,j)=>'<button class="pickchip '+it.mode+'" data-id="'+id+'" data-j="'+j+'" data-k="'+(w.t?1:0)+'" onclick="togglePick(this)">'+w.w+'</button>').join(sep);
+        const sol = it.words.filter(w=>w.t).map(w=>'<span class="my">'+w.w+'</span>').join(', ') || '(ไม่มี)';
+        return '<div class="qbox">'+head(i,it.instr||'')+'<div class="'+wrapClass+'">'+chips+'</div>'+
+          '<div class="fillrow"><button class="chk" data-for="'+id+'" onclick="checkPick(this.dataset.for)">ตรวจคำตอบ</button></div>'+
+          '<div class="err" id="er-'+id+'">เลือกคำที่ต้องการก่อนกดตรวจ</div>'+
+          fbBox(id,it,sol)+'</div>';
+      }
+      if(set.type==='pick2'){
+        ANS[id] = {words:it.words};
+        const chips = it.words.map((w,j)=> w.r==='none' ? '<span class="plainword">'+w.w+'</span>' :
+          '<button class="pickchip2" data-id="'+id+'" data-j="'+j+'" data-k="'+w.r+'" data-state="none" onclick="cyclePick2(this)">'+w.w+'</button>').join(' ');
+        const sol = it.words.filter(w=>w.r!=='none').map(w=>'<span class="my">'+w.w+'</span>='+(w.r==='khas'?'Khas':'Am')).join(' &middot; ');
+        return '<div class="qbox">'+head(i,'')+'<div class="sentwrap">'+chips+'</div>'+
+          '<div class="fillrow"><button class="chk" data-for="'+id+'" onclick="checkPick2(this.dataset.for)">ตรวจคำตอบ</button></div>'+
+          '<div class="err" id="er-'+id+'">ทำเครื่องหมายให้ครบทุกคำก่อนกดตรวจ</div>'+
+          fbBox(id,it,sol)+'</div>';
+      }
+      return '';
+    }).join('')
+    + '<div class="settool"><span class="stat" id="st-'+k+'"></span>'
+    + '<button class="clr" data-set="'+k+'" onclick="resetSet(this.dataset.set)">ล้างคำตอบชุดนี้</button></div>';
+  host.querySelectorAll('.opt').forEach(b=>b.addEventListener('click',pick));
+  host.querySelectorAll('input.ans').forEach(inp=>{
+    inp.addEventListener('input',()=>document.getElementById('er-'+inp.dataset.id).classList.remove('show'));
+    inp.addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); checkFill(inp.dataset.id); } });
+  });
+  setStat(k);
+}
+
+function render(){
+  TOTAL = 0;
+  Object.keys(BANK).forEach(k=>{
+    if(!document.getElementById(k)) return;
+    TOTAL += BANK[k].items.length;
+    renderSet(k);
+  });
+  const t = document.getElementById('tt');
+  if(t) t.textContent = TOTAL;
+}
+
+function setStat(k){
+  const n = BANK[k].items.length;
+  let done = 0, right = 0;
+  for(let i=0;i<n;i++){ const id = k+'-'+i; if(id in answered){ done++; if(answered[id]) right++; } }
+  const el = document.getElementById('st-'+k);
+  if(el) el.innerHTML = done===0 ? 'ยังไม่ได้ทำข้อใดในชุดนี้'
+    : 'ชุดนี้ทำแล้ว <b>'+done+'</b> จาก '+n+' ข้อ ตอบถูก <b>'+right+'</b> ข้อ';
+  const btn = document.querySelector('.clr[data-set="'+k+'"]');
+  if(btn) btn.disabled = (done===0);
+}
+
+function resetSet(k){
+  const n = BANK[k].items.length;
+  for(let i=0;i<n;i++){ const id = k+'-'+i; delete answered[id]; delete ORD[id]; }
+  renderSet(k);
+  updateScore();
+}
+
+function pick(e){
+  const b = e.currentTarget, q = b.dataset.q;
+  if(q in answered) return;
+  const a = +b.dataset.a, i = +b.dataset.i;
+  const ok = (i===a);
+  answered[q] = ok;
+  document.querySelectorAll('.opt[data-q="'+q+'"]').forEach(o=>{
+    o.disabled = true;
+    if(+o.dataset.i===a) o.classList.add('right');
+    else if(o===b) o.classList.add('wrong');
+  });
+  mark(q, ok, ok ? '' : 'สิ่งที่เลือกคือ “'+b.textContent+'”');
+  setStat(setOf(q));
+  updateScore();
+}
+
+function checkFill(id){
+  if(id in answered) return;
+  const inp = document.getElementById('in-'+id);
+  const err = document.getElementById('er-'+id);
+  if(!inp.value.trim()){ err.classList.add('show'); inp.focus(); return; }
+  err.classList.remove('show');
+  const ok = ANS[id].a.some(x=>norm(x)===norm(inp.value));
+  inp.classList.remove('right','wrong');
+  if(ok){
+    answered[id] = true;
+    inp.classList.add('right');
+    inp.disabled = true;
+    lockBtns(id);
+    mark(id, true, '');
+  } else {
+    inp.classList.add('wrong');
+    mark(id, false, '', ANS[id].retryHint);
+  }
+  setStat(setOf(id));
+  updateScore();
+}
+
+function addWord(btn){
+  const id = btn.dataset.id;
+  if(id in answered) return;
+  ORD[id].push({w:btn.textContent, j:btn.dataset.j});
+  btn.disabled = true;
+  paintLine(id);
+  document.getElementById('er-'+id).classList.remove('show');
+}
+function undoWord(id){
+  if((id in answered) || !ORD[id].length) return;
+  const last = ORD[id].pop();
+  document.querySelector('.chip[data-id="'+id+'"][data-j="'+last.j+'"]').disabled = false;
+  paintLine(id);
+}
+function clearOrder(id){
+  if((id in answered) || !ORD[id].length) return;
+  ORD[id] = [];
+  document.querySelectorAll('.chip[data-id="'+id+'"]').forEach(c=>c.disabled=false);
+  paintLine(id);
+  document.getElementById('ln-'+id).classList.remove('right','wrong');
+  document.getElementById('er-'+id).classList.remove('show');
+}
+function paintLine(id){
+  const ln = document.getElementById('ln-'+id);
+  const txt = ORD[id].map(o=>o.w).join(' ');
+  if(txt){ ln.textContent = txt; ln.classList.remove('blank'); }
+  else { ln.textContent = 'กดคำด้านล่างเรียงเป็นประโยค'; ln.classList.add('blank'); }
+}
+function checkOrder(id){
+  if(id in answered) return;
+  const err = document.getElementById('er-'+id);
+  if(ORD[id].length < ANS[id].n){ err.classList.add('show'); return; }
+  err.classList.remove('show');
+  const mine = ORD[id].map(o=>o.w).join(' ');
+  const ok = norm(mine)===norm(ANS[id].a);
+  const ln = document.getElementById('ln-'+id);
+  ln.classList.remove('right','wrong');
+  if(ok){
+    answered[id] = true;
+    ln.classList.add('right');
+    document.querySelectorAll('.chip[data-id="'+id+'"]').forEach(c=>c.disabled=true);
+    lockBtns(id);
+    mark(id, true, '');
+  } else {
+    ln.classList.add('wrong');
+    mark(id, false, '', ANS[id].hint);
+  }
+  setStat(setOf(id));
+  updateScore();
+}
+
+function togglePick(btn){
+  const id = btn.dataset.id;
+  if(id in answered) return;
+  btn.classList.toggle('active');
+  document.getElementById('er-'+id).classList.remove('show');
+}
+function checkPick(id){
+  if(id in answered) return;
+  document.getElementById('er-'+id).classList.remove('show');
+  const chips = document.querySelectorAll('.pickchip[data-id="'+id+'"]');
+  let bad=0;
+  chips.forEach(ch=>{
+    const key = ch.dataset.k==='1';
+    const got = ch.classList.contains('active');
+    ch.disabled = true; ch.classList.add('graded');
+    if(got && key) ch.classList.add('ok');
+    else if(got && !key) ch.classList.add('bad');
+    else if(!got && key) ch.classList.add('missed');
+    if(got!==key) bad++;
+  });
+  const allOk = bad===0;
+  answered[id]=allOk;
+  lockBtns(id);
+  mark(id, allOk, allOk?'':'ผิดพลาด '+bad+' คำ');
+  setStat(setOf(id)); updateScore();
+}
+
+function cyclePick2(btn){
+  const id = btn.dataset.id;
+  if(id in answered) return;
+  const order=['none','khas','am'];
+  btn.dataset.state = order[(order.indexOf(btn.dataset.state)+1)%3];
+  document.getElementById('er-'+id).classList.remove('show');
+}
+function checkPick2(id){
+  if(id in answered) return;
+  document.getElementById('er-'+id).classList.remove('show');
+  const chips = document.querySelectorAll('.pickchip2[data-id="'+id+'"]');
+  let bad=0;
+  chips.forEach(ch=>{
+    const key = ch.dataset.k;
+    const got = ch.dataset.state;
+    ch.disabled=true; ch.classList.add('graded');
+    if(got===key) ch.classList.add('ok');
+    else { bad++; ch.classList.add(got==='none'?'missed':'bad'); }
+  });
+  const allOk = bad===0;
+  answered[id]=allOk;
+  lockBtns(id);
+  mark(id, allOk, allOk?'':'ผิดพลาด '+bad+' คำ');
+  setStat(setOf(id)); updateScore();
+}
+
+function updateScore(){
+  const keys = Object.keys(answered);
+  const n = keys.length;
+  const score = keys.filter(x=>answered[x]).length;
+  document.getElementById('sc').textContent = score;
+  document.getElementById('done').textContent = n;
+  const m = document.getElementById('msg');
+  const pct = n ? score/n : 0;
+  if(n===0) m.textContent = 'เริ่มทำแบบฝึกหัดได้จากสไลด์ก่อนหน้า';
+  else if(n<TOTAL) m.textContent = 'ยังเหลืออีก ' + (TOTAL-n) + ' ข้อ';
+  else if(pct>=0.85) m.textContent = 'เยี่ยมมาก เข้าใจเรื่องคำนามได้ครบถ้วน';
+  else if(pct>=0.65) m.textContent = 'ดีแล้ว ลองทบทวนข้อที่ตอบผิดอีกครั้ง';
+  else m.textContent = 'ลองย้อนกลับไปอ่านเนื้อหาอีกครั้ง แล้วทำใหม่';
+}
+
+function resetAll(){
+  Object.keys(answered).forEach(k=>delete answered[k]);
+  Object.keys(ORD).forEach(k=>delete ORD[k]);
+  render();
+  updateScore();
+}
+function restartAll(){ resetAll(); show(0); }
+
+const slides = [...document.querySelectorAll('.slide')];
+const EX_FROM = 5;
+let cur = 0;
+
+function build(){
+  const d = document.getElementById('dots');
+  d.innerHTML = slides.map((_,i)=>
+    '<button class="dot'+(i>=EX_FROM?' ex':'')+'" data-i="'+i+'" aria-label="ไปสไลด์ที่ '+(i+1)+'"></button>').join('');
+  d.querySelectorAll('.dot').forEach(b=>b.addEventListener('click',()=>show(+b.dataset.i)));
+  document.getElementById('tot').textContent = slides.length;
+}
+function show(i){
+  cur = Math.max(0, Math.min(slides.length-1, i));
+  slides.forEach((s,j)=>s.classList.toggle('on', j===cur));
+  document.querySelectorAll('.dot').forEach((b,j)=>b.classList.toggle('on', j===cur));
+  document.getElementById('pos').textContent = cur+1;
+  document.getElementById('bar').style.right = (100 - (cur+1)/slides.length*100) + '%';
+  document.getElementById('prev').disabled = cur===0;
+  document.getElementById('next').disabled = cur===slides.length-1;
+  window.scrollTo({top:0,behavior:'instant'});
+}
+function go(n){ show(cur+n); }
+document.addEventListener('keydown',e=>{
+  if(e.target.tagName==='BUTTON' && e.key===' ') return;
+  if(e.key==='ArrowRight') go(1);
+  if(e.key==='ArrowLeft') go(-1);
+});
+build(); render(); show(0); updateScore();
+</script>
+</body>
+</html>
